@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  
+  <!-- 포털사이트(네이버, 구글, 다음) 검색 최적화 SEO 메타 태그 -->
+  <title>온산마을관리 사회적협동조합 | 알림·공시 및 투명경영</title>
+  <meta name="description" content="온산마을관리 사회적협동조합 공식 홈페이지. 국토교통부 인가 비영리 사회적협동조합의 공지사항, 활동소식, 기부금 활용실적, 재정결산 공시 정보를 투명하게 공개합니다."/>
+  <meta name="keywords" content="온산마을관리 사회적협동조합, 온산마을관리, 온산 사회적협동조합, 울주군 사회적경제, 울산 도시재생, 방문요양, 청년공유주방, 목공예, 경영공시, 기부금영수증, 국세청 홈택스, 공익법인"/>
+  <meta name="author" content="온산마을관리 사회적협동조합"/>
+  <meta name="robots" content="index, follow"/>
+
+  <!-- Open Graph / SNS 공유 메타태그 -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="온산마을관리 사회적협동조합 | 알림·공시 및 투명경영"/>
+  <meta property="og:description" content="지역과 주민이 함께 만드는 지속가능한 마을, 온산마을관리 사회적협동조합 공식 홈페이지 및 알림·공시 시스템입니다."/>
+  <meta property="og:image" content="./LOGO.jpg"/>
+  <meta property="og:locale" content="ko_KR"/>
+
+  <!-- 구조화된 데이터 (JSON-LD) for Search Engine Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "온산마을관리 사회적협동조합",
+    "alternateName": "Onsan Village Management Social Cooperative",
+    "description": "국토교통부 인가 비영리 사회적협동조합으로서 지역 주거환경개선, 돌봄 및 재생 사업을 전개합니다.",
+    "logo": "./LOGO.jpg",
+    "telephone": "052-238-5678",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "울산광역시 울주군",
+      "streetAddress": "온산읍 덕망로 115, 온산마을행복센터 2층",
+      "addressCountry": "KR"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554'
+            },
+            accent: {
+              orange: '#f97316',
+              green: '#16a34a',
+              yellow: '#eab308'
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Supabase JS Client v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @layer base {
+      html { font-family: 'Noto Sans KR', sans-serif; scroll-padding-top: 5rem; }
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .symbol-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-100 selection:text-brand-900">
+
+  <!-- ========================================================================= -->
+  <!-- Top Admin Notification Bar (Visible only when logged in as admin) -->
+  <!-- ========================================================================= -->
+  <div class="hidden bg-amber-500 text-slate-950 px-4 py-2.5 text-xs sm:text-sm font-semibold shadow-md z-50 sticky top-0" id="admin-banner">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+        <span><strong>[관리자 모드 활성화됨]</strong> <span id="admin-banner-email" class="underline"></span> 계정으로 접속 중입니다. 글 등록 및 삭제 권한이 활성화되었습니다.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="bg-slate-950 text-white hover:bg-slate-800 px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1 shadow-xs" onclick="openPostModal()">
+          <span class="material-symbols-outlined text-[15px]">edit_note</span>
+          새 글 등록
+        </button>
+        <button class="bg-white/80 hover:bg-white text-slate-900 px-2.5 py-1 rounded text-xs font-bold transition" onclick="handleAdminLogout()">
+          로그아웃
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Header & Navigation -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <!-- Top utility subbar -->
+    <div class="bg-slate-100/80 border-b border-slate-200/50 text-xs text-slate-600 hidden md:block">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1 font-medium text-brand-900">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            국토교통부 인가 비영리 사회적협동조합
+          </span>
+          <span class="text-slate-300">|</span>
+          <span>조합·사업 문의 : <strong class="text-slate-700">052-238-5678</strong></span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a class="hover:text-brand-700 transition" href="#notice-board">알림·공시</a>
+          <span class="text-slate-300">|</span>
+          <a class="hover:text-brand-700 transition" href="#finance-report">경영공시</a>
+          <span class="text-slate-300">|</span>
+          <a class="text-slate-600 hover:text-brand-700 transition inline-flex items-center gap-1" href="https://www.hometax.go.kr" target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-outlined text-[14px]">account_balance</span>
+            홈택스 공시
+          </a>
+          <span class="text-slate-300">|</span>
+          
+          <!-- Auth Dynamic Button in Header Top Bar -->
+          <div id="header-auth-container">
+            <button class="inline-flex items-center gap-1 font-semibold text-brand-900 hover:text-brand-700 transition" id="admin-login-btn-top" onclick="openLoginModal()">
+              <span class="material-symbols-outlined text-[15px]">lock</span>
+              <span id="top-login-label">관리자 로그인</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <!-- Organization Logo & Title -->
+      <a class="flex items-center gap-3 group focus:outline-hidden" href="#">
+        <img alt="온산마을관리 사회적협동조합 로고" class="h-11 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" src="./LOGO.jpg" onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuDfP6akzDaSUpFzjGSQpsu16som7kYcYfxwJ9NglKCkouccTIDmo9NuvB_YcUJ03sJiskLCgnl9jpMvgiUf1g03pet6Dd_kHEmHzT79ckTVAZ4qptnEKg9B1k5sheh99tB-PPeOCubYYVryIK9wyBrDWaWGr2se-zGdpPeYoHFnC4ukLQkf1-esdNwOIEY4qa0cOBHOkWnnW7WzJq5P4aYUhJzTPvfAQN_m8wJJrRzWNappAxB_zOyDEqhXM7JFi2rtdQ'"/>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-xl sm:text-2xl text-brand-900 tracking-tight leading-none group-hover:text-brand-700 transition">
+            온산마을관리
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-slate-500 tracking-normal mt-0.5">
+            사회적협동조합
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <nav class="hidden lg:flex items-center gap-8 font-medium text-slate-700 text-[15px]">
+        <!-- 1. 조합 소개 -->
+        <div class="relative group py-5">
+          <button class="inline-flex items-center gap-1 hover:text-brand-700 transition focus:outline-hidden py-1">
+            <span>법인 소개</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-brand-700 group-hover:rotate-180 transition-transform">expand_more</span>
+          </button>
+          <div class="absolute left-0 top-full hidden group-hover:block w-40 bg-white border border-slate-200 rounded-xl shadow-lg p-2 animate-fadeIn z-50">
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#intro-greeting">이사장 인사말</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#intro-history">주요 연혁</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#intro-org">조직도</a>
+          </div>
+        </div>
+
+        <!-- 2. 사업 소개 -->
+        <div class="relative group py-5">
+          <button class="inline-flex items-center gap-1 hover:text-brand-700 transition focus:outline-hidden py-1">
+            <span>사업 소개</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-brand-700 group-hover:rotate-180 transition-transform">expand_more</span>
+          </button>
+          <div class="absolute left-0 top-full hidden group-hover:block w-40 bg-white border border-slate-200 rounded-xl shadow-lg p-2 animate-fadeIn z-50">
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#business-main">6대 주요사업</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#business-news">현장 활동 소식</a>
+          </div>
+        </div>
+
+        <!-- 3. 안내사항 (알림·공시) -->
+        <div class="relative group py-5">
+          <button class="inline-flex items-center gap-1 hover:text-brand-700 transition focus:outline-hidden py-1">
+            <span>알림 · 공시</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-brand-700 group-hover:rotate-180 transition-transform">expand_more</span>
+          </button>
+          <div class="absolute left-0 top-full hidden group-hover:block w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-2 animate-fadeIn z-50">
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#notice-board" onclick="switchCategoryTab('notice')">공지사항 (Notice)</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#notice-board" onclick="switchCategoryTab('activity')">활동소식 (Activity)</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#notice-board" onclick="switchCategoryTab('donation')">기부금 활용실적</a>
+            <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-800 rounded-lg transition font-medium" href="#notice-board" onclick="switchCategoryTab('finance')">재정보고 및 결산</a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Action & Mobile Buttons -->
+      <div class="flex items-center gap-2.5">
+        <!-- Admin Write Button (Desktop Nav, visible only when logged in) -->
+        <button id="nav-admin-write-btn" class="hidden inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-sm font-bold px-3.5 py-2.5 rounded-lg shadow-xs transition" onclick="openPostModal()">
+          <span class="material-symbols-outlined text-[18px]">edit_note</span>
+          <span>글쓰기</span>
+        </button>
+
+        <a class="hidden sm:inline-flex items-center gap-1.5 bg-brand-900 hover:bg-brand-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-xs transition hover:shadow" href="#donation-report">
+          <span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+          <span>출자 및 참여 안내</span>
+        </a>
+
+        <button aria-label="메뉴 열기" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition" onclick="toggleMobileMenu()">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Navigation -->
+    <div class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-4" id="mobile-menu">
+      <div class="space-y-1">
+        <p class="font-bold text-xs uppercase tracking-wider text-brand-900 px-2 py-1">1. 법인 소개</p>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#intro-greeting" onclick="toggleMobileMenu()">이사장 인사말</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#intro-history" onclick="toggleMobileMenu()">연혁</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#intro-org" onclick="toggleMobileMenu()">조직도</a>
+      </div>
+      <div class="space-y-1">
+        <p class="font-bold text-xs uppercase tracking-wider text-brand-900 px-2 py-1">2. 사업 소개</p>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#business-main" onclick="toggleMobileMenu()">주요 사업 (6대 목적사업)</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#business-news" onclick="toggleMobileMenu()">현장 활동 소식</a>
+      </div>
+      <div class="space-y-1">
+        <p class="font-bold text-xs uppercase tracking-wider text-brand-900 px-2 py-1">3. 알림·공시 (게시판)</p>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#notice-board" onclick="switchCategoryTab('notice'); toggleMobileMenu()">공지사항 (Notice)</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#notice-board" onclick="switchCategoryTab('activity'); toggleMobileMenu()">활동소식 (Activity)</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#notice-board" onclick="switchCategoryTab('donation'); toggleMobileMenu()">기부금 활용실적 (Donation)</a>
+        <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md" href="#notice-board" onclick="switchCategoryTab('finance'); toggleMobileMenu()">재정보고 (Finance)</a>
+      </div>
+      
+      <!-- Mobile Auth Action Area -->
+      <div class="pt-3 border-t border-slate-100 space-y-2">
+        <div id="mobile-auth-controls" class="flex flex-col gap-2">
+          <!-- Dynamically populated by JS: either login button or write+logout buttons -->
+        </div>
+        <a class="block text-center text-xs bg-brand-900 text-white px-3 py-2 rounded-md font-semibold" href="#donation-report" onclick="toggleMobileMenu()">
+          조합원 출자 및 후원 안내
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- HERO SECTION -->
+  <!-- ========================================================================= -->
+  <section class="relative bg-gradient-to-br from-brand-950 via-brand-900 to-slate-900 text-white overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#93c5fd_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div class="max-w-2xl space-y-6 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-blue-200 text-xs sm:text-sm font-medium border border-white/15">
+          <span class="material-symbols-outlined text-[16px] text-amber-400">verified</span>
+          <span>국토교통부 설립인가 비영리 사회적협동조합</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight sm:leading-snug">
+          지역과 주민이 함께 만드는<br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-amber-200 to-emerald-300">
+            지속가능한 온산 마을공동체
+          </span>
+        </h1>
+        <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-light">
+          온산마을관리 사회적협동조합은 주민의 자발적 참여와 신뢰를 바탕으로 주거복지, 취약계층 상호돌봄, 목공예, 청년창업, 신재생에너지 사업을 추진하여 더 따뜻하고 살기 좋은 우리 동네를 만들어갑니다.
+        </p>
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+          <a class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-3 rounded-lg shadow-md transition transform hover:-translate-y-0.5" href="#intro-greeting">
+            <span>조합 소개 바로보기</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </a>
+          <a class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-medium px-5 py-3 rounded-lg backdrop-blur-xs border border-white/20 transition" href="#business-main">
+            <span>6대 핵심사업 보기</span>
+          </a>
+          <a class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-3 rounded-lg shadow-sm transition" href="#notice-board">
+            <span class="material-symbols-outlined text-[18px]">campaign</span>
+            <span>알림·공시 게시판</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Highlights Card / Official Logo Presentation -->
+      <div class="w-full lg:w-96 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/15 shadow-2xl flex flex-col items-center text-center">
+        <div class="w-24 h-24 rounded-full bg-white p-3 shadow-lg flex items-center justify-center mb-4">
+          <img alt="온산마을관리 심볼" class="w-full h-full object-contain" src="./LOGO.jpg" onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuDGb8mcLcpoJuqjTaV5tsz7Zpvy35KYHhXra75gdqwKEwBNUkyTU2x9x2QPQRz7wtU50vajaxYByyQY-gYnV9csoA6QOjCNTe6mk2LBSu5SCmOm8g3sjpu2EhuHQnd27-D5STiDTmmN_jBlMV_pPiDkdBNT44_cM7HA6FBcvjHjh90LlmigvDWfXgIsSOoonTjRzjL-Xf6-6N3zXnCNyBP-xbNPWgdCOT0DLdHEdtnJ4YmfIuYW7-_enMlkUohDHXsYzw'"/>
+        </div>
+        <h2 class="text-xl font-bold text-white mb-1">온산마을관리 사회적협동조합</h2>
+        <p class="text-xs text-blue-200 mb-6 font-medium">투명경영 · 주민돌봄 · 지역상생</p>
+        <div class="w-full grid grid-cols-2 gap-3 text-left">
+          <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <span class="text-[11px] text-slate-300 block">설립인가</span>
+            <span class="text-sm font-bold text-amber-300">국토교통부</span>
+          </div>
+          <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <span class="text-[11px] text-slate-300 block">주요 사업군</span>
+            <span class="text-sm font-bold text-emerald-300">6대 목적사업</span>
+          </div>
+          <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <span class="text-[11px] text-slate-300 block">경영 공시</span>
+            <span class="text-sm font-bold text-blue-300">국세청 100% 공개</span>
+          </div>
+          <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <span class="text-[11px] text-slate-300 block">조합원 연대</span>
+            <span class="text-sm font-bold text-purple-300">주민 중심 자치</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 1. 법인 소개 (인사말, 연혁, 조직도) -->
+  <!-- ========================================================================= -->
+  <section class="py-20 bg-white border-b border-slate-200" id="intro">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Title Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="inline-block text-brand-700 font-bold text-xs uppercase tracking-widest bg-brand-50 px-3 py-1 rounded-full mb-3 border border-brand-100">
+          About Cooperative
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">1. 법인 소개</h2>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          온산마을관리 사회적협동조합의 설립 철학과 비전, 발자취 및 책임 있는 조직 운영 체계를 소개합니다.
+        </p>
+      </div>
+
+      <!-- 1-1. 이사장 인사말 -->
+      <div class="mb-20 scroll-mt-24" id="intro-greeting">
+        <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 sm:p-10 lg:p-12 shadow-xs relative overflow-hidden">
+          <div class="absolute right-6 top-6 text-slate-200 select-none pointer-events-none hidden sm:block">
+            <span class="material-symbols-outlined text-[100px] leading-none opacity-40">format_quote</span>
+          </div>
+          <div class="relative z-10 max-w-4xl">
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-2">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              이사장 인사말
+            </div>
+            <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-snug mb-6">
+              "지역과 주민이 함께 만드는 지속가능한 마을, <br class="hidden sm:inline"/>
+              온산마을관리 사회적협동조합입니다."
+            </h3>
+            <div class="space-y-4 text-slate-700 leading-relaxed text-sm sm:text-base font-normal">
+              <p>
+                온산마을관리 사회적협동조합은 지역주민의 참여와 협력을 바탕으로 지역의 문제를 함께 해결하고, 지속가능한 마을공동체를 만들어 가기 위해 설립된 사회적협동조합입니다.
+              </p>
+              <p>
+                온산의 지역적 특성과 주민들의 경험·역량을 바탕으로 주거환경 및 생활서비스, 돌봄과 교육, 지역문화, 청년 창업과 일자리 등 주민의 삶과 밀접한 다양한 사업을 발굴하고 추진하고 있습니다.
+              </p>
+              <p>
+                또한 주민·기관·단체·기업 등 지역의 다양한 주체들과 협력하여 지역의 자원과 역량을 연결하고, 주민이 직접 참여하고 함께 성장하는 지역관리 체계를 만들어 가고자 합니다.
+              </p>
+              <p>
+                앞으로도 주민의 삶을 살피고 지역의 가치를 발견하며, 주민과 함께 성장하는 온산, 지속가능한 지역의 미래를 만들어가는 든든한 지역 공동체가 되겠습니다.
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-brand-900 text-white flex items-center justify-center font-bold text-lg shadow">
+                  온산
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500 font-medium">따뜻하고 활력 넘치는 공동체</p>
+                  <p class="text-sm font-bold text-slate-800">온산마을관리 사회적협동조합</p>
+                </div>
+              </div>
+              <div class="text-right sm:text-right">
+                <span class="text-xs text-slate-500 block">온산마을관리 사회적협동조합</span>
+                <span class="text-lg font-extrabold text-slate-900 tracking-wider">이사장 황 진 규</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1-2. 주요 연혁 -->
+      <div class="mb-20 scroll-mt-24" id="intro-history">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              History &amp; Milestones
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">주요 연혁</h3>
+          </div>
+          <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">창립부터 현재까지</span>
+        </div>
+        <div class="relative border-l-2 border-brand-200 ml-4 md:ml-32 space-y-8 py-2">
+          <!-- Milestone 1 -->
+          <div class="relative pl-8 md:pl-10 group">
+            <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-slate-400 group-hover:border-brand-600 transition"></div>
+            <div class="md:absolute md:-left-36 md:top-0 text-xs md:text-sm font-bold text-slate-500 md:text-right md:w-28">
+              2023. 02. 13
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs hover:border-brand-300 transition">
+              <h4 class="font-bold text-slate-900 text-base">발기인 모집</h4>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">온산 지역 발전과 마을관리를 위한 주민 발기인 구성 및 준비위원회 발족</p>
+            </div>
+          </div>
+          <!-- Milestone 2 -->
+          <div class="relative pl-8 md:pl-10 group">
+            <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-slate-400 group-hover:border-brand-600 transition"></div>
+            <div class="md:absolute md:-left-36 md:top-0 text-xs md:text-sm font-bold text-slate-500 md:text-right md:w-28">
+              2023. 03. 30
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs hover:border-brand-300 transition">
+              <h4 class="font-bold text-slate-900 text-base">(가칭)온산마을관리 사회적협동조합 창립총회 개최</h4>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">윤태양 초대 이사장 취임 및 정관 제정, 사업계획 승인</p>
+            </div>
+          </div>
+          <!-- Milestone 3 -->
+          <div class="relative pl-8 md:pl-10 group">
+            <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-brand-600"></div>
+            <div class="md:absolute md:-left-36 md:top-0 text-xs md:text-sm font-bold text-brand-700 md:text-right md:w-28">
+              2023. 07. 26
+            </div>
+            <div class="bg-brand-50/50 p-4 rounded-xl border border-brand-200 shadow-xs">
+              <div class="inline-block bg-brand-700 text-white text-[10px] font-bold px-2 py-0.5 rounded mb-1">정부 인가</div>
+              <h4 class="font-bold text-brand-900 text-base">사회적협동조합 설립인가 (국토교통부)</h4>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">국토교통부 공식 인가를 획득하여 법정 공익 비영리 사회적협동조합으로 출범</p>
+            </div>
+          </div>
+          <!-- Milestone 4 -->
+          <div class="relative pl-8 md:pl-10 group">
+            <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-slate-400 group-hover:border-brand-600 transition"></div>
+            <div class="md:absolute md:-left-36 md:top-0 text-xs md:text-sm font-bold text-slate-500 md:text-right md:w-28">
+              2023. 09. 22
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs hover:border-brand-300 transition">
+              <h4 class="font-bold text-slate-900 text-base">온산마을관리 사회적협동조합 설립</h4>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">법인 등기 완료 및 본격적인 목적사업 및 거점 시설 운영 개시</p>
+            </div>
+          </div>
+          <!-- Milestone 5 -->
+          <div class="relative pl-8 md:pl-10 group">
+            <div class="absolute -left-[10px] top-1.5 w-5 h-5 rounded-full bg-amber-500 border-4 border-white shadow"></div>
+            <div class="md:absolute md:-left-36 md:top-0 text-xs md:text-sm font-extrabold text-amber-600 md:text-right md:w-28">
+              2025. 09. 08
+            </div>
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-xl border border-amber-300 shadow-sm">
+              <div class="inline-block bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded mb-1">2대 출범</div>
+              <h4 class="font-extrabold text-slate-900 text-base">온산마을관리 사회적협동조합 2대 이사장 취임</h4>
+              <p class="text-xs sm:text-sm text-slate-700 mt-1 font-medium">황진규 이사장 취임 및 6대 사업부 체계 고도화·지속가능 공동체 전환 선언</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1-3. 조직도 -->
+      <div class="scroll-mt-24" id="intro-org">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+            <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+            Governance &amp; Organization
+          </div>
+          <h3 class="text-2xl font-bold text-slate-900">조직도</h3>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1">
+            조합원 총회를 중심으로 이사회, 감사, 사무국과 전문화된 6개 사업부가 유기적으로 협력합니다.
+          </p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-10 overflow-x-auto shadow-xs">
+          <div class="min-w-[760px] flex flex-col items-center">
+            <!-- Tier 1: 총회 -->
+            <div class="bg-emerald-600 text-white font-bold text-sm sm:text-base px-10 py-3 rounded-lg shadow-sm border border-emerald-700">
+              총회
+            </div>
+            <div class="w-0.5 h-6 bg-slate-400"></div>
+            <!-- Tier 2: 이사회 & 감사 -->
+            <div class="relative flex items-center justify-center w-full max-w-md">
+              <div class="bg-emerald-600 text-white font-bold text-sm sm:text-base px-8 py-2.5 rounded-lg shadow-sm border border-emerald-700">
+                이사회
+              </div>
+              <div class="absolute right-0 flex items-center">
+                <div class="w-6 h-0.5 bg-amber-600"></div>
+                <div class="bg-amber-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-lg shadow-xs">
+                  감사
+                </div>
+              </div>
+            </div>
+            <div class="w-0.5 h-6 bg-slate-400"></div>
+            <!-- Tier 3: 이사장 & 갈등관리위원회 -->
+            <div class="relative flex items-center justify-center w-full max-w-md">
+              <div class="absolute left-0 flex items-center">
+                <div class="bg-orange-500 text-white font-bold text-xs px-3 py-2 rounded-lg shadow-xs text-center leading-tight">
+                  갈등관리<br/>위원회
+                </div>
+                <div class="w-6 h-0.5 bg-orange-500"></div>
+              </div>
+              <div class="bg-white border-2 border-slate-700 text-slate-900 font-extrabold text-sm sm:text-base px-8 py-2.5 rounded-lg shadow-sm">
+                이사장
+              </div>
+            </div>
+            <div class="w-0.5 h-6 bg-slate-400"></div>
+            <!-- Tier 4: 사무국 -->
+            <div class="bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 text-center shadow-xs max-w-xs w-full">
+              <div class="font-extrabold text-emerald-900 text-sm mb-1.5 bg-emerald-200/60 py-0.5 rounded">사무국</div>
+              <ul class="text-[12px] text-slate-700 space-y-0.5 text-center">
+                <li>• 각종사업시행</li>
+                <li>• 조합원 관리</li>
+                <li>• 회계, 세무 관리</li>
+                <li>• 홍보 마케팅</li>
+              </ul>
+            </div>
+            <div class="w-0.5 h-6 bg-slate-400"></div>
+            <div class="w-11/12 border-t-2 border-slate-400 relative"></div>
+            <!-- Tier 5: 6개 사업부 카드 -->
+            <div class="grid grid-cols-6 gap-2 w-full mt-4">
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-xs py-1 px-1 rounded mb-2">목공예 사업부</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 목공예 사업</p>
+                  <p>• 일반사업</p>
+                  <p>• 교육사업</p>
+                </div>
+              </div>
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-xs py-1 px-1 rounded mb-2">방문요양 사업부</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 방문요양서비스</p>
+                  <p>• 대상자 발굴</p>
+                  <p>• 요양보호사 양성</p>
+                </div>
+              </div>
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-[11px] leading-tight py-1 px-1 rounded mb-2">발달장애가정<br/>상호돌봄 사업부</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 발달장애우 돌봄</p>
+                  <p>• 경제활동 지원</p>
+                  <p>• 돌봄전문가 양성</p>
+                </div>
+              </div>
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-[11px] leading-tight py-1 px-1 rounded mb-2">주택관리 플랫폼<br/>운영사업부</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 다가구 주택관리</p>
+                  <p>• 아파트 관리</p>
+                  <p>• 공공시설물 관리</p>
+                </div>
+              </div>
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-[11px] leading-tight py-1 px-1 rounded mb-2">청년공유주방<br/>인큐베이팅 사업</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 청년창업자 모집</p>
+                  <p>• 청년창업 교육</p>
+                  <p>• 창업 무상지원</p>
+                </div>
+              </div>
+              <div class="bg-white border border-blue-200 rounded-lg p-2.5 text-center flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+                <div class="bg-brand-900 text-white font-bold text-[11px] leading-tight py-1 px-1 rounded mb-2">신재생에너지<br/>발전 사업부</div>
+                <div class="text-[11px] text-slate-600 space-y-1 text-left">
+                  <p class="font-semibold text-slate-800">• 신재생 전력생산</p>
+                  <p>• 전력 판매 관리</p>
+                  <p>• 공급인증서 발급</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 2. 사업 소개 (주요사업, 활동 소식) -->
+  <!-- ========================================================================= -->
+  <section class="py-20 bg-slate-50 border-b border-slate-200" id="business">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="inline-block text-brand-700 font-bold text-xs uppercase tracking-widest bg-brand-100/60 px-3 py-1 rounded-full mb-3 border border-brand-200">
+          Core Programs &amp; Field Activities
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">2. 사업 소개</h2>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          온산마을관리 사회적협동조합의 6대 중점 목적사업과 주민과 함께하는 생생한 활동 소식을 전합니다.
+        </p>
+      </div>
+
+      <!-- 2-1. 6대 주요 목적사업 -->
+      <div class="mb-20 scroll-mt-24" id="business-main">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              6대 주요 목적사업
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">지역 주민과 함께하는 맞춤형 마을 사업</h3>
+          </div>
+          <span class="text-xs text-brand-800 bg-brand-100 px-3 py-1 rounded-full font-semibold">정관 공익목적사업</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">handyman</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 01</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">목공예사업</h4>
+              <div class="space-y-3 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <div>
+                  <strong class="text-slate-800 block mb-0.5">• 일반사업</strong>
+                  <span>핸드메이드 목공 제품 제작, 공유경제 공방 운영 등</span>
+                </div>
+                <div>
+                  <strong class="text-slate-800 block mb-0.5">• 교육사업</strong>
+                  <span>주민 목공 역량강화 교육, 친환경 생활 DIY 공예 교실 등</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>목공예 창작소 운영</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">health_and_safety</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 02</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">방문요양사업</h4>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <strong class="text-slate-800 block mb-1">• 방문요양서비스</strong>
+                <p>• 어르신 신체적 수발 및 일상생활 밀착 지원</p>
+                <p>• 가사·외출 동행 및 정서적 지지 서비스</p>
+                <p>• 전문 요양보호사 양성 및 복지 인프라 구축</p>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>어르신 돌봄안전망</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">family_restroom</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 03</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">발달장애가정 상호돌봄사업</h4>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <strong class="text-slate-800 block mb-1">• 통합 돌봄 체계 구축</strong>
+                <p>• 발달장애당사자 권익보호 및 상호 돌봄망 운영</p>
+                <p>• 발달장애가정 경제활동 지원 및 자립 기반 조성</p>
+                <p>• 지역사회 돌봄전문가 양성 및 멘토링 연계</p>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>지역사회 상호부조</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">apartment</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 04</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">주택관리플랫폼 운영사업</h4>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <strong class="text-slate-800 block mb-1">• 원스톱 마을관리 인프라</strong>
+                <p>• 다가구주택 및 아파트 종합 주택관리</p>
+                <p>• 마을 내 공공시설물 정기점검 및 영선 보수</p>
+                <p>• 주거 취약가구 집수리 및 주거환경 개선 사업</p>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>도시재생 거점관리</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">restaurant</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 05</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">청년공유주방 인큐베이팅</h4>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <strong class="text-slate-800 block mb-1">• 청년 창업 활성화</strong>
+                <p>• 창업 의지는 있으나 경험이 부족한 청년 발굴</p>
+                <p>• 외식업 실전 조리시설 지원 및 전문가 멘토링</p>
+                <p>• 로컬 식자재 기반 레시피 개발 및 시제품 품평회</p>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>청년 로컬 창업지원</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition">
+                  <span class="material-symbols-outlined text-2xl">solar_power</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-600">사업부 06</span>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition">신재생 에너지 발전사업</h4>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                <strong class="text-slate-800 block mb-1">• 탄소중립 친환경 에너지</strong>
+                <p>• 신재생 발전 인허가 취득 및 태양광 설비 운영</p>
+                <p>• 생산된 친환경 청정 전력 판매 및 공급인증서(REC) 발급</p>
+                <p>• 발전 수익의 마을 복지 및 공동체 기금 환원</p>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>친환경 에너지 자립</span>
+              <span class="text-brand-700 font-semibold inline-flex items-center gap-0.5">자세히보기 <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-2. 현장 활동 소식 (Field Stories & News Cards) -->
+      <div class="scroll-mt-24" id="business-news">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              Field News &amp; Stories
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">현장 활동 소식</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">온산 곳곳에서 조합원과 주민이 함께 땀 흘리며 일군 따뜻한 순간들입니다.</p>
+          </div>
+          <button onclick="switchCategoryTab('activity'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="inline-flex items-center gap-1 bg-white hover:bg-slate-50 text-brand-900 text-xs font-bold px-3 py-2 rounded-lg border border-slate-200 shadow-2xs transition">
+            <span>활동소식 게시판 보기</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col">
+            <div class="h-44 bg-gradient-to-tr from-brand-900 to-blue-700 flex flex-col items-center justify-center text-white relative p-4">
+              <span class="material-symbols-outlined text-4xl opacity-80 mb-2">carpenter</span>
+              <span class="text-xs font-semibold bg-white/20 px-2.5 py-0.5 rounded-full">목공예 사업부</span>
+              <span class="absolute bottom-2 left-3 text-[11px] text-blue-200">온산마을 목공체험관</span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                  <span>목공 DIY</span>
+                  <span>•</span>
+                  <span>사무국 홍보팀</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-base mb-2 hover:text-brand-700 transition">
+                  주민참여 친환경 목공예 DIY 교실 개강
+                </h4>
+                <p class="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                  지역 주민들이 함께 참여한 가운데 원목 생활소품 제작 기초 교육 및 공유경제 활성화를 위한 실습 과정이 활기차게 시작되었습니다.
+                </p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400 font-medium">참여자 역량강화</span>
+                <button onclick="switchCategoryTab('activity'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="text-brand-700 font-semibold hover:underline">공시 바로가기</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col">
+            <div class="h-44 bg-gradient-to-tr from-emerald-800 to-teal-600 flex flex-col items-center justify-center text-white relative p-4">
+              <span class="material-symbols-outlined text-4xl opacity-80 mb-2">volunteer_activism</span>
+              <span class="text-xs font-semibold bg-white/20 px-2.5 py-0.5 rounded-full">방문요양 &amp; 돌봄</span>
+              <span class="absolute bottom-2 left-3 text-[11px] text-emerald-200">온산읍 관내 가구</span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                  <span>상호돌봄</span>
+                  <span>•</span>
+                  <span>돌봄지원팀</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-base mb-2 hover:text-brand-700 transition">
+                  취약계층 어르신 및 발달장애가정 온기나눔 방문
+                </h4>
+                <p class="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                  요양보호사 및 조합원 자원봉사단이 관내 도움이 필요한 가구를 직접 방문하여 건강식 전달 및 주거 안전 점검을 마쳤습니다.
+                </p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400 font-medium">상시 상담 접수중</span>
+                <button onclick="switchCategoryTab('activity'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="text-brand-700 font-semibold hover:underline">공시 바로가기</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-md transition flex flex-col">
+            <div class="h-44 bg-gradient-to-tr from-amber-800 to-orange-600 flex flex-col items-center justify-center text-white relative p-4">
+              <span class="material-symbols-outlined text-4xl opacity-80 mb-2">soup_kitchen</span>
+              <span class="text-xs font-semibold bg-white/20 px-2.5 py-0.5 rounded-full">청년공유주방</span>
+              <span class="absolute bottom-2 left-3 text-[11px] text-amber-200">인큐베이팅 센터</span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                  <span>청년 창업</span>
+                  <span>•</span>
+                  <span>청년사업팀</span>
+                </div>
+                <h4 class="font-bold text-slate-900 text-base mb-2 hover:text-brand-700 transition">
+                  청년공유주방 예비창업자 시제품 품평회
+                </h4>
+                <p class="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                  지역 로컬 식자재를 활용한 청년 창업팀들의 메뉴 개발 성과 발표와 외식 경영인의 원가 및 위생 컨설팅이 진행되었습니다.
+                </p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400 font-medium">로컬 창업 멘토링</span>
+                <button onclick="switchCategoryTab('activity'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="text-brand-700 font-semibold hover:underline">공시 바로가기</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 3. 알림·공시 게시판 섹션 (Notice & Disclosure Board - Supabase Backend) -->
+  <!-- ========================================================================= -->
+  <section class="py-20 bg-white" id="notices">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Title Header -->
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="inline-block text-brand-700 font-bold text-xs uppercase tracking-widest bg-brand-50 px-3 py-1 rounded-full mb-3 border border-brand-100">
+          Transparency &amp; Disclosures
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">3. 알림 · 경영공시</h2>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          온산마을관리 사회적협동조합의 공지사항, 현장 활동소식, 기부금 활용실적, 재정보고를 100% 투명하게 공개합니다.
+        </p>
+      </div>
+
+      <!-- Main Board Container -->
+      <div class="mb-20 scroll-mt-24" id="notice-board">
+        <!-- Top Toolbar: 4 Categories Tabs + Search & Action -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+          <!-- 4 Categories Filter Tabs (notice, activity, donation, finance) -->
+          <div class="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold">
+            <button class="cat-tab-btn active px-3.5 py-1.5 rounded-lg bg-brand-900 text-white shadow-xs transition" data-category="all" onclick="switchCategoryTab('all')">
+              전체
+            </button>
+            <button class="cat-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-900 hover:bg-white/80 transition" data-category="notice" onclick="switchCategoryTab('notice')">
+              공지사항
+            </button>
+            <button class="cat-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-900 hover:bg-white/80 transition" data-category="activity" onclick="switchCategoryTab('activity')">
+              활동소식
+            </button>
+            <button class="cat-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-900 hover:bg-white/80 transition" data-category="donation" onclick="switchCategoryTab('donation')">
+              기부금 활용실적
+            </button>
+            <button class="cat-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-900 hover:bg-white/80 transition" data-category="finance" onclick="switchCategoryTab('finance')">
+              재정보고
+            </button>
+          </div>
+
+          <!-- Search & Admin Action Bar -->
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1 sm:w-64">
+              <input class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:bg-white transition" id="board-search-input" onkeyup="handleSearchInput()" placeholder="제목 또는 내용 검색" type="text"/>
+              <span class="material-symbols-outlined text-[18px] text-slate-400 absolute left-2.5 top-2.5">search</span>
+            </div>
+
+            <!-- Admin Write Button (Appears only when admin logged in) -->
+            <button class="hidden inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs transition shadow-xs shrink-0" id="admin-create-post-btn" onclick="openPostModal()">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>글쓰기</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Board Table Container -->
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100/90 border-b border-slate-200 text-xs font-bold text-slate-600">
+                  <th class="py-3 px-4 w-16 text-center">번호</th>
+                  <th class="py-3 px-4 w-32 text-center">분류</th>
+                  <th class="py-3 px-4 min-w-[240px]">제목</th>
+                  <th class="py-3 px-4 w-28 text-center">첨부파일</th>
+                  <th class="py-3 px-4 w-28 text-center">등록일</th>
+                  <th class="admin-col hidden py-3 px-4 w-24 text-center text-amber-900 bg-amber-50/70 border-l border-amber-200">관리</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs sm:text-sm text-slate-700" id="board-table-body">
+                <!-- Dynamically loaded from Supabase 'posts' table -->
+                <tr>
+                  <td colspan="5" class="py-12 text-center text-slate-400">
+                    <div class="flex flex-col items-center gap-2">
+                      <span class="material-symbols-outlined text-3xl animate-spin text-brand-600">progress_activity</span>
+                      <span>게시글을 불러오는 중입니다...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Board Footer Info -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 mt-3 px-1 gap-2">
+          <span id="board-count-info">총 0건의 게시물이 등록되어 있습니다.</span>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1 text-slate-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              수파베이스(Supabase) 실시간 DB 연동
+            </span>
+            <span class="text-slate-300">|</span>
+            <span class="text-slate-400">모든 방문자 열람 및 파일 다운로드 가능</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-2. 기부금 활용실적 공시 안내 (Donation Transparency Sub-section) -->
+      <div class="mb-20 scroll-mt-24" id="donation-report">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              Donations &amp; Sponsorships
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">기부금 활용실적 공시</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-3 py-1 rounded-full border border-emerald-200">
+              법인세법 시행규칙 제63조의3 준수
+            </span>
+            <button onclick="switchCategoryTab('donation'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="text-xs bg-brand-50 hover:bg-brand-100 text-brand-800 font-bold px-3 py-1 rounded-full border border-brand-200 transition">
+              기부금 공시목록 보기 &rarr;
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">연간 기부금 모금 누계액</span>
+            <div class="text-2xl font-extrabold text-brand-900 mt-1">28,450,000<span class="text-sm font-normal text-slate-600 ml-1">원</span></div>
+            <p class="text-xs text-slate-500 mt-2">주민 후원금 및 지역 상생 기업 후원금</p>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">목적사업 직접 집행률</span>
+            <div class="text-2xl font-extrabold text-emerald-600 mt-1">94.8<span class="text-sm font-normal text-slate-600 ml-1">%</span></div>
+            <p class="text-xs text-slate-500 mt-2">돌봄·주거복지 등 공익사업 직접 투입</p>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+            <span class="text-xs text-slate-500 font-medium">기부금 영수증 발급 여부</span>
+            <div class="text-2xl font-extrabold text-purple-700 mt-1">100%<span class="text-sm font-normal text-slate-600 ml-1">발급</span></div>
+            <p class="text-xs text-slate-500 mt-2">국세청 연말정산 간소화 서비스 자동 연계</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-3. 재정보고 & 경영공시 (Financial Disclosure Sub-section) -->
+      <div class="scroll-mt-24" id="finance-report">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              Financial Statements &amp; Audits
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">재정보고 및 결산공시</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500">협동조합기본법 제49조의2 준수</span>
+            <button onclick="switchCategoryTab('finance'); document.getElementById('notice-board').scrollIntoView({ behavior: 'smooth' });" class="text-xs bg-brand-50 hover:bg-brand-100 text-brand-800 font-bold px-3 py-1 rounded-full border border-brand-200 transition">
+              재정보고 공시목록 보기 &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 필수 하단 배너: 국세청 (홈택스) 공익법인 공시 시스템 바로가기 배너 -->
+  <!-- ========================================================================= -->
+  <section class="bg-gradient-to-r from-brand-950 via-brand-900 to-slate-900 text-white py-10 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-xs">
+        <div class="flex items-center gap-4">
+          <!-- 국세청 상징 뱃지 -->
+          <div class="w-16 h-16 rounded-xl bg-white text-brand-900 flex flex-col items-center justify-center font-extrabold shadow-md shrink-0">
+            <span class="text-xs tracking-tighter text-slate-600">대한민국</span>
+            <span class="text-lg font-black text-brand-900 leading-tight">국세청</span>
+          </div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs text-amber-300 font-semibold mb-1">
+              <span class="material-symbols-outlined text-[15px]">verified_user</span>
+              <span>국세청 홈택스(Hometax) 공익법인 결산서류 공시시스템</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white">
+              온산마을관리 사회적협동조합 국세청 경영공시 바로가기
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+              본 조합은 국세청 공익법인 결산서류 공시 규정에 따라 재정 및 기부금 모금·활용실적을 국세청 홈택스에 투명하게 공시하고 있습니다. 주민 누구나 언제든지 직접 열람하실 수 있습니다.
+            </p>
+          </div>
+        </div>
+        <a class="shrink-0 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-3.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5" href="https://www.hometax.go.kr" rel="noopener noreferrer" target="_blank">
+          <span>국세청 홈택스 공시 확인하기</span>
+          <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- Footer -->
+  <!-- ========================================================================= -->
+  <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 pb-10 border-b border-slate-800">
+        <!-- Left: Logo & Legal Name -->
+        <div class="md:col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <img alt="온산마을관리 사회적협동조합 로고" class="h-10 w-auto bg-white rounded-lg p-1" src="./LOGO.jpg" onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuC0zdDzmf6Ok8fVx1nAvQZUNVxgJn73ReL90ZFeqbxgYmUIb8R1mbDj5c9vxMp7FUiJj4xoYtqk_SuVzrbb0E4O1zLtD9kGW8jYvLkA6rHZUh0-Ay77ejxy-fynqh_asaAuJ3id4ZXNSrdVFD7TsIff-m-8Z0AkvxIHzlEy-hKFdswDJpWVnPOsUC4VkcH6zk2BGSvRC619naRzCG-LbB6bYenrddl0Tp3D3xw41sm3aE4BX-cnakPpQJHJrg2chKKg6Q'"/>
+            <div>
+              <span class="text-lg font-bold text-white block">온산마을관리 사회적협동조합</span>
+              <span class="text-xs text-slate-400">국토교통부 인가 비영리 사회적협동조합</span>
+            </div>
+          </div>
+          <div class="text-slate-400 space-y-1 text-xs leading-relaxed">
+            <p><strong>대표자:</strong> 황진규 (2대 이사장) &nbsp;|&nbsp; <strong>고유번호:</strong> 214-82-45890</p>
+            <p><strong>소재지:</strong> 울산광역시 울주군 온산읍 덕망로 115, 온산마을행복센터 2층</p>
+            <p><strong>전화:</strong> 052-238-5678 &nbsp;|&nbsp; <strong>팩스:</strong> 052-238-5679 &nbsp;|&nbsp; <strong>이메일:</strong> onsan_coop@naver.com</p>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">빠른 바로가기</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a class="hover:text-white transition" href="#intro-greeting">이사장 인사말</a></li>
+            <li><a class="hover:text-white transition" href="#intro-history">주요 연혁</a></li>
+            <li><a class="hover:text-white transition" href="#intro-org">조직도 및 6대 사업부</a></li>
+            <li><a class="hover:text-white transition" href="#business-main">6대 목적사업</a></li>
+            <li><a class="hover:text-white transition" href="#notice-board">알림·경영공시 게시판</a></li>
+            <li><a class="hover:text-white transition" href="#donation-report">기부금 활용실적</a></li>
+          </ul>
+        </div>
+
+        <!-- External & Admin -->
+        <div>
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">공시 포털 &amp; 관리자</h4>
+          <div class="space-y-3">
+            <a class="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300" href="https://www.hometax.go.kr" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[15px]">account_balance</span>
+              <span>국세청 홈택스 바로가기</span>
+            </a>
+            <div>
+              <button class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-xs font-semibold transition border border-slate-700" id="footer-login-btn" onclick="openLoginModal()">
+                <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+                <span id="footer-login-label">관리자 로그인</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              * 승인된 조합 관리자만 로그인할 수 있습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copyright & Bottom Disclaimers -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>© 2025 온산마을관리 사회적협동조합. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a class="hover:text-slate-400" href="#">개인정보처리방침</a>
+          <span>|</span>
+          <a class="hover:text-slate-400" href="#">조합 정관</a>
+          <span>|</span>
+          <a class="hover:text-slate-400" href="#">이메일무단수집거부</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: Admin Login Modal (sb.auth.signInWithPassword) -->
+  <!-- ========================================================================= -->
+  <div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" id="login-modal">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 animate-fadeIn">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-900 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">조합 관리자 로그인</h4>
+        </div>
+        <button class="text-slate-400 hover:text-slate-600 transition" onclick="closeLoginModal()">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form class="space-y-4" onsubmit="handleAdminLogin(event)">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">관리자 이메일</label>
+          <input class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-hidden" id="login-email" required type="email" placeholder="admin@onsan.coop"/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">비밀번호</label>
+          <input class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-hidden" id="login-password" required type="password" placeholder="비밀번호 입력"/>
+        </div>
+        
+        <div id="login-error-msg" class="hidden text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200"></div>
+
+        <button class="w-full bg-brand-900 hover:bg-brand-800 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-xs" id="login-submit-btn" type="submit">
+          관리자로 로그인
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: Post Detail View Modal (모든 방문자 열람 및 파일 다운로드 가능) -->
+  <!-- ========================================================================= -->
+  <div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" id="post-view-modal">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <span class="px-2.5 py-0.5 rounded text-xs font-bold border" id="view-post-badge">
+          공지사항
+        </span>
+        <button class="text-slate-400 hover:text-slate-600 transition" onclick="closePostViewModal()">
+          <span class="material-symbols-outlined text-[24px]">close</span>
+        </button>
+      </div>
+
+      <div class="py-4">
+        <h3 class="text-xl font-bold text-slate-900 mb-2 leading-snug" id="view-post-title"></h3>
+        <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-6 pb-3 border-b border-slate-100">
+          <span>등록일: <strong class="text-slate-700" id="view-post-date"></strong></span>
+          <span>•</span>
+          <span>작성처: <strong class="text-slate-700">온산마을관리 사회적협동조합</strong></span>
+          <span id="view-post-file-indicator" class="hidden inline-flex items-center gap-1 text-emerald-700 font-semibold">
+            • <span class="material-symbols-outlined text-[15px]">attachment</span> 첨부파일 있음
+          </span>
+        </div>
+
+        <!-- Post Content (line breaks preserved) -->
+        <div class="text-sm text-slate-700 leading-relaxed whitespace-pre-line min-h-[120px]" id="view-post-content"></div>
+
+        <!-- Attachment Box (if file_url exists) -->
+        <div id="view-post-attachment-container" class="hidden mt-6 pt-4 border-t border-slate-100">
+          <!-- Filled dynamically by JavaScript: preview image or PDF download card -->
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <!-- Admin Delete Button in Detail Modal -->
+          <button id="view-post-admin-delete-btn" class="hidden inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition" onclick="deleteCurrentViewingPost()">
+            <span class="material-symbols-outlined text-[15px]">delete</span>
+            이 글 삭제
+          </button>
+        </div>
+        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition" onclick="closePostViewModal()">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 3: Post Create Modal (관리자 전용: 글쓰기 및 파일 업로드) -->
+  <!-- ========================================================================= -->
+  <div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" id="post-create-modal">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">edit_document</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">새 알림·공시 등록</h4>
+        </div>
+        <button class="text-slate-400 hover:text-slate-600 transition" onclick="closePostModal()">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <form class="space-y-4 pt-4" id="post-create-form" onsubmit="handleCreatePost(event)">
+        <!-- 4 Categories Select -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">분류 (카테고리)</label>
+          <select class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-hidden" id="form-post-category" required>
+            <option value="notice">공지사항 (notice)</option>
+            <option value="activity">활동소식 (activity)</option>
+            <option value="donation">기부금 활용실적 (donation)</option>
+            <option value="finance">재정보고 (finance)</option>
+          </select>
+        </div>
+
+        <!-- Title -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">제목</label>
+          <input class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-hidden" id="form-post-title" required type="text" placeholder="공시 제목을 입력하세요"/>
+        </div>
+
+        <!-- Content -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">내용</label>
+          <textarea class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-hidden leading-relaxed" id="form-post-content" required rows="6" placeholder="상세 공시 내용을 입력하세요"></textarea>
+        </div>
+
+        <!-- File Upload (Storage: 'board_files' bucket) -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">첨부파일 (이미지 또는 PDF 문서)</label>
+          <input class="w-full px-3 py-1.5 text-xs text-slate-700 border border-slate-300 rounded-lg focus:outline-hidden file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" id="form-post-file" type="file" accept="image/*,.pdf"/>
+          <p class="text-[11px] text-slate-500 mt-1">
+            * 지원 형식: 이미지 파일(PNG, JPG, WebP) 또는 PDF 공문서 (스토리지 버킷: <code>board_files</code>)
+          </p>
+        </div>
+
+        <div id="post-create-error-msg" class="hidden text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200"></div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button class="px-4 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition" onclick="closePostModal()" type="button">취소</button>
+          <button class="bg-brand-900 hover:bg-brand-800 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition shadow-xs flex items-center gap-1.5" id="form-post-submit-btn" type="submit">
+            <span class="material-symbols-outlined text-[16px]">check</span>
+            <span>공시 등록하기</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: Supabase Client, Auth, Board & Storage Integration -->
+  <!-- ========================================================================= -->
+  <script>
+    // 1. Supabase Initialization (Clean 'sb' client variable to prevent conflict with CDN window.supabase)
+    const SUPABASE_URL = 'https://fnabduytgnnqxaevsgdp.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Ionlt1vByXA3rbICON-1Rg_C0RM_crw';
+    const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    window.sb = sb;
+
+    // Global State
+    let currentUser = null;
+    let allPosts = [];
+    let currentCategory = 'all';
+    let currentViewingPost = null;
+
+    // Category Metadata Dictionary
+    const CATEGORIES = {
+      notice: {
+        code: 'notice',
+        label: '공지사항',
+        badgeClass: 'bg-blue-100 text-blue-800 border-blue-200'
+      },
+      activity: {
+        code: 'activity',
+        label: '활동소식',
+        badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      },
+      donation: {
+        code: 'donation',
+        label: '기부금 활용실적',
+        badgeClass: 'bg-amber-100 text-amber-800 border-amber-200'
+      },
+      finance: {
+        code: 'finance',
+        label: '재정보고',
+        badgeClass: 'bg-purple-100 text-purple-800 border-purple-200'
+      }
+    };
+
+    function getCategoryInfo(rawCat) {
+      if (!rawCat) return CATEGORIES.notice;
+      const key = rawCat.toLowerCase().trim();
+      if (CATEGORIES[key]) return CATEGORIES[key];
+
+      // Fallback mappings for Korean text or variants
+      if (key.includes('공지')) return CATEGORIES.notice;
+      if (key.includes('활동') || key.includes('소식')) return CATEGORIES.activity;
+      if (key.includes('기부') || key.includes('후원')) return CATEGORIES.donation;
+      if (key.includes('재정') || key.includes('결산')) return CATEGORIES.finance;
+
+      return {
+        code: rawCat,
+        label: rawCat,
+        badgeClass: 'bg-slate-100 text-slate-800 border-slate-200'
+      };
+    }
+
+    function formatDate(isoStr) {
+      if (!isoStr) return '-';
+      try {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return isoStr;
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}. ${mm}. ${dd}`;
+      } catch (e) {
+        return isoStr;
+      }
+    }
+
+    // ==========================================
+    // Auth Management
+    // ==========================================
+    async function initAuth() {
+      if (!sb) {
+        console.error('Supabase client is not available.');
+        return;
+      }
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        currentUser = session?.user || null;
+        updateAuthUI();
+      } catch (err) {
+        console.error('Session retrieval error:', err);
+      }
+
+      // Listen for Auth changes in real time
+      sb.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user || null;
+        updateAuthUI();
+      });
+    }
+
+    function updateAuthUI() {
+      const adminBanner = document.getElementById('admin-banner');
+      const adminBannerEmail = document.getElementById('admin-banner-email');
+      const headerAuth = document.getElementById('header-auth-container');
+      const navWriteBtn = document.getElementById('nav-admin-write-btn');
+      const boardWriteBtn = document.getElementById('admin-create-post-btn');
+      const mobileAuthControls = document.getElementById('mobile-auth-controls');
+      const footerLoginBtn = document.getElementById('footer-login-btn');
+      const footerLoginLabel = document.getElementById('footer-login-label');
+
+      if (currentUser) {
+        // ADMIN LOGGED IN
+        if (adminBanner) adminBanner.classList.remove('hidden');
+        if (adminBannerEmail) adminBannerEmail.textContent = currentUser.email || '관리자';
+
+        // Header Top Bar Auth
+        if (headerAuth) {
+          headerAuth.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-amber-900 font-semibold bg-amber-100/80 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">admin_panel_settings</span>
+                <span>${currentUser.email || '관리자'}</span>
+              </span>
+              <button onclick="handleAdminLogout()" class="text-xs text-slate-500 hover:text-red-600 underline font-medium">
+                로그아웃
+              </button>
+            </div>
+          `;
+        }
+
+        if (navWriteBtn) navWriteBtn.classList.remove('hidden');
+        if (boardWriteBtn) boardWriteBtn.classList.remove('hidden');
+
+        // Mobile Nav controls
+        if (mobileAuthControls) {
+          mobileAuthControls.innerHTML = `
+            <button class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-2 rounded-md text-xs transition flex items-center justify-center gap-1.5" onclick="openPostModal(); toggleMobileMenu();">
+              <span class="material-symbols-outlined text-[16px]">edit_note</span>
+              <span>새 글 작성</span>
+            </button>
+            <button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3 py-2 rounded-md text-xs transition" onclick="handleAdminLogout(); toggleMobileMenu();">
+              로그아웃 (${currentUser.email || '관리자'})
+            </button>
+          `;
+        }
+
+        if (footerLoginLabel) footerLoginLabel.textContent = "관리자 로그아웃";
+        if (footerLoginBtn) footerLoginBtn.onclick = handleAdminLogout;
+
+      } else {
+        // GUEST (LOGGED OUT)
+        if (adminBanner) adminBanner.classList.add('hidden');
+
+        if (headerAuth) {
+          headerAuth.innerHTML = `
+            <button class="inline-flex items-center gap-1 font-semibold text-brand-900 hover:text-brand-700 transition" onclick="openLoginModal()">
+              <span class="material-symbols-outlined text-[15px]">lock</span>
+              <span>관리자 로그인</span>
+            </button>
+          `;
+        }
+
+        if (navWriteBtn) navWriteBtn.classList.add('hidden');
+        if (boardWriteBtn) boardWriteBtn.classList.add('hidden');
+
+        if (mobileAuthControls) {
+          mobileAuthControls.innerHTML = `
+            <button class="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 py-2 rounded-md transition" onclick="openLoginModal(); toggleMobileMenu();">
+              <span class="material-symbols-outlined text-[16px]">lock</span>
+              <span>관리자 로그인</span>
+            </button>
+          `;
+        }
+
+        if (footerLoginLabel) footerLoginLabel.textContent = "관리자 로그인";
+        if (footerLoginBtn) footerLoginBtn.onclick = openLoginModal;
+      }
+
+      // Re-render table to toggle admin delete columns
+      renderBoardTable();
+    }
+
+    // Login Modal Handlers
+    function openLoginModal() {
+      if (currentUser) {
+        handleAdminLogout();
+        return;
+      }
+      const errBox = document.getElementById('login-error-msg');
+      if (errBox) errBox.classList.add('hidden');
+      const modal = document.getElementById('login-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      const modal = document.getElementById('login-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function handleAdminLogin(e) {
+      if (e) e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const submitBtn = document.getElementById('login-submit-btn');
+      const errBox = document.getElementById('login-error-msg');
+
+      if (!email || !password) {
+        if (errBox) {
+          errBox.textContent = '이메일과 비밀번호를 모두 입력해주세요.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+          <span>로그인 중...</span>
+        `;
+      }
+      if (errBox) errBox.classList.add('hidden');
+
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          if (errBox) {
+            errBox.textContent = '로그인 실패: ' + (error.message === 'Invalid login credentials' ? '이메일 또는 비밀번호가 일치하지 않습니다.' : error.message);
+            errBox.classList.remove('hidden');
+          }
+        } else {
+          closeLoginModal();
+          alert('관리자로 성공적으로 로그인되었습니다.');
+        }
+      } catch (err) {
+        if (errBox) {
+          errBox.textContent = '로그인 중 오류가 발생했습니다: ' + err.message;
+          errBox.classList.remove('hidden');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '관리자로 로그인';
+        }
+      }
+    }
+
+    async function handleAdminLogout() {
+      if (confirm('관리자 모드에서 로그아웃 하시겠습니까?')) {
+        await sb.auth.signOut();
+        alert('로그아웃되었습니다.');
+      }
+    }
+
+    // ==========================================
+    // Board Posts: Fetch, Filter, Render
+    // ==========================================
+    async function fetchPosts() {
+      const tbody = document.getElementById('board-table-body');
+      if (!tbody) return;
+      if (!sb) {
+        console.error('Supabase client is not available.');
+        return;
+      }
+      try {
+        const { data, error } = await sb
+          .from('posts')
+          .select('id, category, title, content, file_url, file_name, created_at')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Fetch posts error:', error);
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="${currentUser ? 6 : 5}" class="py-10 text-center text-red-500">
+                게시글을 불러오지 못했습니다 (${error.message}). 잠시 후 다시 시도해주세요.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        allPosts = data || [];
+        renderBoardTable();
+      } catch (err) {
+        console.error('Fetch posts exception:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${currentUser ? 6 : 5}" class="py-10 text-center text-red-500">
+              게시글 로딩 중 오류가 발생했습니다: ${err.message}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function switchCategoryTab(cat) {
+      currentCategory = cat;
+      const buttons = document.querySelectorAll('.cat-tab-btn');
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-category') === cat) {
+          btn.className = 'cat-tab-btn active px-3.5 py-1.5 rounded-lg bg-brand-900 text-white shadow-xs transition';
+        } else {
+          btn.className = 'cat-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-900 hover:bg-white/80 transition';
+        }
+      });
+      renderBoardTable();
+    }
+
+    function handleSearchInput() {
+      renderBoardTable();
+    }
+
+    function getFilteredPosts() {
+      const q = (document.getElementById('board-search-input')?.value || '').trim().toLowerCase();
+      let list = allPosts;
+
+      // Filter by Category
+      if (currentCategory !== 'all') {
+        list = list.filter(p => {
+          const info = getCategoryInfo(p.category);
+          return info.code === currentCategory;
+        });
+      }
+
+      // Filter by Keyword
+      if (q) {
+        list = list.filter(p => 
+          (p.title && p.title.toLowerCase().includes(q)) ||
+          (p.content && p.content.toLowerCase().includes(q)) ||
+          (p.file_name && p.file_name.toLowerCase().includes(q))
+        );
+      }
+
+      return list;
+    }
+
+    function renderBoardTable() {
+      const tbody = document.getElementById('board-table-body');
+      const countInfo = document.getElementById('board-count-info');
+      const adminCols = document.querySelectorAll('.admin-col');
+
+      // Toggle Admin Column header
+      adminCols.forEach(col => {
+        if (currentUser) col.classList.remove('hidden');
+        else col.classList.add('hidden');
+      });
+
+      const list = getFilteredPosts();
+      if (countInfo) {
+        countInfo.textContent = `총 ${list.length}건의 게시물이 표시 중입니다. (전체 ${allPosts.length}건)`;
+      }
+
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        const emptyAdminPrompt = currentUser ? `
+          <div class="mt-2">
+            <button onclick="openPostModal()" class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+              <span class="material-symbols-outlined text-[15px]">add</span>
+              첫 게시글 등록하기
+            </button>
+          </div>
+        ` : '';
+
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${currentUser ? 6 : 5}" class="py-12 text-center text-slate-400">
+              <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 block">inventory_2</span>
+              <span>등록된 게시물이 없습니다.</span>
+              ${emptyAdminPrompt}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map((item, idx) => {
+        const catInfo = getCategoryInfo(item.category);
+        const dateStr = formatDate(item.created_at);
+
+        // Attachment button / badge
+        let fileBtn = '<span class="text-slate-300 text-xs">-</span>';
+        if (item.file_url) {
+          const isPdf = item.file_name?.toLowerCase().endsWith('.pdf') || item.file_url?.toLowerCase().includes('.pdf');
+          const icon = isPdf ? 'picture_as_pdf' : 'image';
+          fileBtn = `
+            <a href="${item.file_url}" target="_blank" download="${item.file_name || 'download'}" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-50 text-brand-800 text-xs font-semibold transition border border-slate-200" title="${item.file_name || '다운로드'}">
+              <span class="material-symbols-outlined text-[14px]">${icon}</span>
+              <span>다운</span>
+            </a>
+          `;
+        }
+
+        // Admin action column
+        const adminTd = currentUser ? `
+          <td class="py-3 px-4 text-center bg-amber-50/50 border-l border-amber-100">
+            <button onclick="handleDeletePost(${item.id}, event)" class="inline-flex items-center gap-0.5 text-xs font-bold text-red-600 hover:text-red-800 hover:underline">
+              <span class="material-symbols-outlined text-[14px]">delete</span>
+              <span>삭제</span>
+            </button>
+          </td>
+        ` : '';
+
+        return `
+          <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="openPostViewModal(${item.id})">
+            <td class="py-3.5 px-4 text-center font-medium text-slate-400 text-xs">${list.length - idx}</td>
+            <td class="py-3.5 px-4 text-center">
+              <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded border ${catInfo.badgeClass}">
+                ${catInfo.label}
+              </span>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="flex items-center gap-1.5">
+                <span class="font-semibold text-slate-800 hover:text-brand-700 transition line-clamp-1">
+                  ${item.title}
+                </span>
+                ${item.file_url ? '<span class="material-symbols-outlined text-[15px] text-slate-400 shrink-0" title="첨부파일">attachment</span>' : ''}
+              </div>
+            </td>
+            <td class="py-3.5 px-4 text-center">${fileBtn}</td>
+            <td class="py-3.5 px-4 text-center text-xs text-slate-500">${dateStr}</td>
+            ${adminTd}
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // Post Detail View Modal
+    // ==========================================
+    function openPostViewModal(id) {
+      const item = allPosts.find(p => p.id === id);
+      if (!item) return;
+
+      currentViewingPost = item;
+      const catInfo = getCategoryInfo(item.category);
+
+      const badgeElem = document.getElementById('view-post-badge');
+      if (badgeElem) {
+        badgeElem.textContent = catInfo.label;
+        badgeElem.className = `px-2.5 py-0.5 rounded text-xs font-bold border ${catInfo.badgeClass}`;
+      }
+
+      const titleElem = document.getElementById('view-post-title');
+      if (titleElem) titleElem.textContent = item.title;
+
+      const dateElem = document.getElementById('view-post-date');
+      if (dateElem) dateElem.textContent = formatDate(item.created_at);
+
+      const contentElem = document.getElementById('view-post-content');
+      if (contentElem) contentElem.textContent = item.content || '(내용이 없습니다)';
+
+      const fileIndicator = document.getElementById('view-post-file-indicator');
+      const attachContainer = document.getElementById('view-post-attachment-container');
+
+      if (item.file_url) {
+        if (fileIndicator) fileIndicator.classList.remove('hidden');
+        if (attachContainer) {
+          attachContainer.classList.remove('hidden');
+
+          const isImage = /\.(jpg|jpeg|png|webp|gif|svg)($|\?)/i.test(item.file_url) || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(item.file_name || '');
+
+          if (isImage) {
+            attachContainer.innerHTML = `
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-bold text-slate-700 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-emerald-600">image</span>
+                    첨부 이미지: ${item.file_name || '이미지 파일'}
+                  </span>
+                  <a href="${item.file_url}" target="_blank" download="${item.file_name || 'image'}" class="inline-flex items-center gap-1 bg-brand-900 hover:bg-brand-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow-2xs">
+                    <span class="material-symbols-outlined text-[15px]">download</span>
+                    다운로드
+                  </a>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-slate-200 flex justify-center">
+                  <img src="${item.file_url}" alt="${item.title}" class="max-h-80 w-auto rounded object-contain"/>
+                </div>
+              </div>
+            `;
+          } else {
+            attachContainer.innerHTML = `
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-red-100 text-red-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
+                  </div>
+                  <div>
+                    <p class="text-xs sm:text-sm font-bold text-slate-800 line-clamp-1">${item.file_name || '첨부 문서'}</p>
+                    <p class="text-[11px] text-slate-400">공식 공문서 및 결산 증빙자료</p>
+                  </div>
+                </div>
+                <a href="${item.file_url}" target="_blank" download="${item.file_name || 'document'}" class="inline-flex items-center justify-center gap-1.5 bg-brand-900 hover:bg-brand-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-2xs shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">download</span>
+                  <span>열람 / 다운로드</span>
+                </a>
+              </div>
+            `;
+          }
+        }
+      } else {
+        if (fileIndicator) fileIndicator.classList.add('hidden');
+        if (attachContainer) {
+          attachContainer.classList.add('hidden');
+          attachContainer.innerHTML = '';
+        }
+      }
+
+      // Admin Delete Button inside detail modal
+      const deleteBtn = document.getElementById('view-post-admin-delete-btn');
+      if (deleteBtn) {
+        if (currentUser) deleteBtn.classList.remove('hidden');
+        else deleteBtn.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('post-view-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePostViewModal() {
+      const modal = document.getElementById('post-view-modal');
+      if (modal) modal.classList.add('hidden');
+      currentViewingPost = null;
+    }
+
+    function deleteCurrentViewingPost() {
+      if (!currentViewingPost) return;
+      handleDeletePost(currentViewingPost.id);
+    }
+
+    // ==========================================
+    // Post Create Modal & File Upload (board_files bucket)
+    // ==========================================
+    function openPostModal() {
+      if (!currentUser) {
+        alert('글쓰기 권한이 없습니다. 먼저 관리자로 로그인해주세요.');
+        openLoginModal();
+        return;
+      }
+      const form = document.getElementById('post-create-form');
+      if (form) form.reset();
+      const errBox = document.getElementById('post-create-error-msg');
+      if (errBox) errBox.classList.add('hidden');
+
+      // Pre-select current tab category if not 'all'
+      if (currentCategory !== 'all') {
+        const catSelect = document.getElementById('form-post-category');
+        if (catSelect) catSelect.value = currentCategory;
+      }
+
+      const modal = document.getElementById('post-create-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePostModal() {
+      const modal = document.getElementById('post-create-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function handleCreatePost(e) {
+      if (e) e.preventDefault();
+      if (!currentUser) {
+        alert('관리자 로그인이 만료되었거나 권한이 없습니다.');
+        return;
+      }
+
+      const category = document.getElementById('form-post-category').value;
+      const title = document.getElementById('form-post-title').value.trim();
+      const content = document.getElementById('form-post-content').value.trim();
+      const fileInput = document.getElementById('form-post-file');
+      const submitBtn = document.getElementById('form-post-submit-btn');
+      const errBox = document.getElementById('post-create-error-msg');
+
+      if (!title || !content) {
+        if (errBox) {
+          errBox.textContent = '제목과 내용을 모두 입력해주세요.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+          <span>저장 중...</span>
+        `;
+      }
+      if (errBox) errBox.classList.add('hidden');
+
+      let fileUrl = null;
+      let fileName = null;
+
+      try {
+        // File Upload Handling
+        if (fileInput && fileInput.files && fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          fileName = file.name;
+
+          // Limit file size (max 25MB)
+          if (file.size > 25 * 1024 * 1024) {
+            throw new Error('파일 크기는 25MB 이하만 업로드 가능합니다.');
+          }
+
+          // Build collision-free file path
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const filePath = `${Date.now()}_${cleanName}`;
+
+          const { data: uploadData, error: uploadError } = await sb.storage
+            .from('board_files')
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error('Storage upload error:', uploadError);
+            if (uploadError.message?.includes('not found') || uploadError.error === 'Bucket not found') {
+              throw new Error("Supabase Storage에 'board_files' 버킷이 생성되어 있지 않습니다. Supabase 대시보드 -> Storage에서 'board_files' 버킷을 Public으로 생성해주세요.");
+            } else {
+              throw new Error('스토리지 파일 업로드 실패: ' + uploadError.message);
+            }
+          }
+
+          // Retrieve Public URL
+          const { data: publicUrlData } = sb.storage
+            .from('board_files')
+            .getPublicUrl(filePath);
+
+          fileUrl = publicUrlData.publicUrl;
+        }
+
+        // Insert into 'posts' table
+        const { error: insertError } = await sb
+          .from('posts')
+          .insert([
+            {
+              category,
+              title,
+              content,
+              file_url: fileUrl,
+              file_name: fileName,
+              created_at: new Date().toISOString()
+            }
+          ]);
+
+        if (insertError) {
+          throw new Error('데이터베이스 저장 실패: ' + insertError.message);
+        }
+
+        alert('게시글이 성공적으로 등록되었습니다.');
+        closePostModal();
+        await fetchPosts();
+      } catch (err) {
+        console.error('Post creation error:', err);
+        if (errBox) {
+          errBox.textContent = err.message;
+          errBox.classList.remove('hidden');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[16px]">check</span>
+            <span>공시 등록하기</span>
+          `;
+        }
+      }
+    }
+
+    // ==========================================
+    // Delete Post (Admin Only)
+    // ==========================================
+    async function handleDeletePost(id, event) {
+      if (event) event.stopPropagation();
+
+      if (!currentUser) {
+        alert('삭제 권한이 없습니다. 관리자 로그인이 필요합니다.');
+        return;
+      }
+
+      if (!confirm('해당 게시글을 정말로 삭제하시겠습니까?\n삭제된 내용은 복구할 수 없습니다.')) {
+        return;
+      }
+
+      try {
+        const { error } = await sb
+          .from('posts')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          alert('삭제 실패: ' + error.message);
+        } else {
+          alert('게시글이 삭제되었습니다.');
+          if (currentViewingPost && currentViewingPost.id === id) {
+            closePostViewModal();
+          }
+          await fetchPosts();
+        }
+      } catch (err) {
+        alert('삭제 처리 중 오류가 발생했습니다: ' + err.message);
+      }
+    }
+
+    // ==========================================
+    // Mobile Menu Helper
+    // ==========================================
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    // ==========================================
+    // Register all modal & event functions to window object
+    // ==========================================
+    window.openLoginModal = openLoginModal;
+    window.closeLoginModal = closeLoginModal;
+    window.handleAdminLogin = handleAdminLogin;
+    window.handleAdminLogout = handleAdminLogout;
+
+    window.openPostModal = openPostModal;
+    window.closePostModal = closePostModal;
+    window.openCreateModal = openPostModal; // Alias for openCreateModal
+    window.handleCreatePost = handleCreatePost;
+
+    window.openPostViewModal = openPostViewModal;
+    window.closePostViewModal = closePostViewModal;
+    window.deleteCurrentViewingPost = deleteCurrentViewingPost;
+    window.handleDeletePost = handleDeletePost;
+
+    window.switchCategoryTab = switchCategoryTab;
+    window.handleSearchInput = handleSearchInput;
+    window.toggleMobileMenu = toggleMobileMenu;
+    window.fetchPosts = fetchPosts;
+    window.renderBoardTable = renderBoardTable;
+
+    // ==========================================
+    // DOM Ready Initialization
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', async () => {
+      await initAuth();
+      await fetchPosts();
+    });
+  </script>
+</body>
+</html>
